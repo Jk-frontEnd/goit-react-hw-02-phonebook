@@ -1,0 +1,11 @@
+.searchBox {
+    position: fixed;
+    left: 600px;
+    top: 300px;
+}
+
+.searchBox input {
+    margin-top: 4px;
+    padding: 4px;
+    width: 200px;
+}

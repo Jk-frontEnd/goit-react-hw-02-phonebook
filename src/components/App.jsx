@@ -1,34 +1,31 @@
-import React, { Component } from 'react';
-
-import { Contacts } from './contact/Contacts';
-import { Form } from 'form/Form';
-import { Search } from './search/Search'
+import React, { useState } from 'react';
+import { Contacts } from './Contact/Contacts';
+import { Form } from './Form/Form';
+import { Search } from './Search/Search';
 import { nanoid } from 'nanoid';
 
-export class App extends Component {
-  state = {
+const App = () => {
+  const [state, setState] = useState({
     contacts: [],
     filter: '',
     name: '',
     number: '',
+  });
+
+  const handleNameChange = (event) => {
+    setState((prevState) => ({ ...prevState, name: event.target.value }));
   };
 
-  handleNameChange = (event) => {
-    this.setState({ name: event.target.value });
+  const handleNumberChange = (event) => {
+    setState((prevState) => ({ ...prevState, number: event.target.value }));
   };
 
-  handleNumberChange = (event) => {
-    this.setState({ number: event.target.value });
-  };
-  
-  handleFilterChange = (event) => {
-    this.setState({ filter: event.target.value.toLowerCase() });
+  const handleFilterChange = (event) => {
+    setState((prevState) => ({ ...prevState, filter: event.target.value.toLowerCase() }));
   };
 
-  
-
-  handleAddContact = () => {
-    const { name, number, contacts } = this.state;
+  const handleAddContact = () => {
+    const { name, number, contacts } = state;
 
     if (name.trim() === '' || number.trim() === '') {
       alert('Please enter both the contact name and phone number.');
@@ -46,69 +43,48 @@ export class App extends Component {
       number: number.trim(),
     };
 
-    this.setState({
+    setState((prevState) => ({
+      ...prevState,
       contacts: [...contacts, newContact],
       name: '',
       number: '',
-    });
+    }));
   };
 
-  handleDeleteContact = (id) => {
-    const { contacts } = this.state;
+  const handleDeleteContact = (id) => {
+    const { contacts } = state;
     const updatedContacts = contacts.filter((contact) => contact.id !== id);
-    this.setState({
-      contacts: updatedContacts,
-    });
+    setState((prevState) => ({ ...prevState, contacts: updatedContacts }));
   };
 
-  render() {
-    const { name, number, contacts, filter } = this.state;
+  const { name, number, contacts, filter } = state;
 
-    // Filter the contacts based on the search filter
-    const filteredContacts = contacts.filter(
-      (contact) => contact.name.toLowerCase().includes(filter)
-    );
+  const filteredContacts = contacts.filter((contact) => contact.name.toLowerCase().includes(filter));
 
-    return (
-      <>
-        <h1
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            margin: 0,
-            marginBottom: '12px',
-            marginTop: '12px',
-            padding: 0,
-          }}
-        >
-          Phonebook
-        </h1>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'baseline',
-            gap: '60px',
-            margin: 0,
-            padding: 0,
-          }}
-        >
-          
-          <div>
-             <Form
-              name={name}
-              number={number}
-              onNameChange={this.handleNameChange}
-              onNumberChange={this.handleNumberChange}
-              onAddContact={this.handleAddContact}
-            />
-          </div>
-          <div>
-            <Contacts contacts={filteredContacts} onDeleteContact={this.handleDeleteContact} />
-          </div>
+  return (
+    <>
+      <h1
+      >
+        Phonebook
+      </h1>
+      <div
+      >
+        <div>
+          <Form
+            name={name}
+            number={number}
+            onNameChange={handleNameChange}
+            onNumberChange={handleNumberChange}
+            onAddContact={handleAddContact}
+          />
         </div>
-        <Search filter={filter} onFilterChange={this.handleFilterChange} />
-      </>
-    );
-  }
-}
+        <div>
+          <Contacts contacts={filteredContacts} onDeleteContact={handleDeleteContact} />
+        </div>
+      </div>
+      <Search filter={filter} onFilterChange={handleFilterChange} />
+    </>
+  );
+};
+
+export { App };

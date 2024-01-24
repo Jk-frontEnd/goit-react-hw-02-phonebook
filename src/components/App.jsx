@@ -1,54 +1,79 @@
 import React from 'react';
+import { nanoid } from 'nanoid';
 import { Form } from './Form/Form';
 import { Search } from './Search/Search';
 import { Contacts } from './Contact/Contacts';
-import {
-  getInitialState,
-  handleNameChange,
-  handleNumberChange,
-  handleFilterChange,
-  handleAddContact,
-  handleDeleteContact,
-} from './StateHelper/StateHelper';
 
 export class App extends React.Component {
-  state = getInitialState();
+  state = {
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
+  };
 
+  
+  handleAddContact = (name, number) => {
+    const { contacts } = this.state;
+
+    if (name.trim() === '' || number.trim() === '') {
+      alert('Please enter both the contact name and phone number.');
+      return;
+    }
+
+    if (contacts.some((contact) => contact.name.toLowerCase() === name.trim().toLowerCase())) {
+      alert('Contact with this name already exists.');
+      return;
+    }
+
+    const newContact = {
+      id: nanoid(),
+      name: name.trim(),
+      number: number.trim(),
+    };
+
+    this.setState({
+      contacts: [...contacts, newContact],
+    });
+  };
   handleNameChange = (event) => {
-    this.setState((prevState) => handleNameChange(prevState, event.target.value));
+    this.setState({ name: event.target.value });
   };
 
   handleNumberChange = (event) => {
-    this.setState((prevState) => handleNumberChange(prevState, event.target.value));
+    this.setState({ number: event.target.value });
   };
 
   handleFilterChange = (event) => {
-    this.setState((prevState) => handleFilterChange(prevState, event.target.value));
+    this.setState({ filter: event.target.value.toLowerCase() });
   };
 
-  handleAddContact = () => {
-    this.setState((prevState) => handleAddContact(prevState));
-  };
+  
 
   handleDeleteContact = (id) => {
-    this.setState((prevState) => handleDeleteContact(prevState, id));
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter((contact) => contact.id !== id),
+    }));
   };
 
+ 
   render() {
-    const { name, number, contacts, filter } = this.state;
+    const { contacts, filter, name, number } = this.state;
     const filteredContacts = contacts.filter((contact) => contact.name.toLowerCase().includes(filter));
 
     return (
       <div>
         <h1>Phonebook</h1>
         <Form
+          handleNameChange={this.handleNameChange}
+          handleNumberChange={this.handleNumberChange}
+          handleAddContact={this.handleAddContact}
           name={name}
           number={number}
-          onNameChange={this.handleNameChange}
-          onNumberChange={this.handleNumberChange}
-          onAddContact={this.handleAddContact}
         />
-
         <h2>Contacts</h2>
         <Search filter={filter} onFilterChange={this.handleFilterChange} />
         <Contacts contacts={filteredContacts} onDeleteContact={this.handleDeleteContact} />

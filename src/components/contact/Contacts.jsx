@@ -5,8 +5,7 @@ const Contacts = ({ contacts, onDeleteContact }) => {
   return (
     <div className={css.contBox}>
       <h2 className={css.contBox}>Contacts</h2>
-      <ul
-      >
+      <ul>
         {contacts.map((contact) => (
           <li
             key={contact.id}

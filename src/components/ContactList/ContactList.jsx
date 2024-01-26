@@ -7,7 +7,9 @@ const ContactList = ({ contacts, onDeleteContact }) => {
     <div className={css.contBox}>
       <h2 className={css.header}>Contacts</h2>
       <ul>
-        <ContactElem contacts={contacts} onDeleteContact={onDeleteContact} />
+        {contacts.map((contact) => (
+          <ContactElem key={contact.id} contact={contact} onDeleteContact={onDeleteContact} />
+        ))}
       </ul>
     </div>
   );
